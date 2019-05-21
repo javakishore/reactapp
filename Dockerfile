@@ -1,8 +1,9 @@
-FROM node:alpine
+FROM node:alpine as nodeapp
 
-WORKDIR /home/app
-COPY ./package.json /
+WORKDIR /app
+COPY ./ /
 RUN npm install
-COPY ./ ./
+RUN npm run build
 
-CMD [ "npm" ,"start" ]
+FROM ngnix
+COPY --from=nodeapp /app/build /usr/share/ngnix/html
